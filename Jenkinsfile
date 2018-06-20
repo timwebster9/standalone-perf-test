@@ -21,7 +21,7 @@ node('mac') {
 		              component: 'backend']
 
 		// Publish to Azure Blob Storage
-		azureBlobUpload('buildlog-storage-account', Gatling.GATLING_REPORTS_DIR, "performance/${params.product}-${params.component}/${params.environment}")
+		azureBlobUpload('container-key', Gatling.GATLING_REPORTS_DIR, "performance/${params.product}-${params.component}/${params.environment}")
 
 		// Publish to Azure CosmosDB
 	    def reportsPath = "${WORKSPACE}/" + Gatling.GATLING_REPORTS_PATH
