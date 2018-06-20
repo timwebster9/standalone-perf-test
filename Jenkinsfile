@@ -1,30 +1,16 @@
-pipeline {
-    agent {
-        node {
-            label 'mac'
-        }
-    }
-    stages {
-        stage('Cleanup') {
-            steps {
-                deleteDir()
-            }
-        }
-		stage('Checkout') {
-			steps {
-				checkout scm
+node('mac') {
+	stage('Cleanup') {
+		deleteDir()
+	}
+	stage('Checkout') {
+		checkout scm
+	}
+	stage('Gatling Test') {
+		withEnv(["BASE_URL=http://localhost:8080"]) {
+				def gatling = new com.timw.Gatling(this)
+				gatling.execute()
 			}
 		}
-        stage('Gatling Test') {
-            steps {
-				withEnv(["BASE_URL=http://localhost:8080"]) {
-					script {
-						def gatling = new com.timw.Gatling(this)
-						gatling.execute()
-					}
-				}
-            }
-        }
     }
 }
 
