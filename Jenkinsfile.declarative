@@ -1,0 +1,46 @@
+pipeline {
+
+  agent {
+    kubernetes {
+      label 'k8s'
+      defaultContainer 'jnlp'
+      yaml """
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    some-label: some-label-value
+spec:
+  containers:e
+  - name: docker
+    image: docker:18.05.0-ce-git
+    volumeMounts:
+      - mountPath: /var/run/docker.sock
+        name: docker-socket
+    command:
+    - cat
+    tty: true
+  volumes:
+  - name: docker-socket
+    hostPath:
+      path: /var/run/docker.sock
+
+"""
+    }
+  }
+    stages {
+        stage('Performance Test') {
+            steps {
+                container('docker') {
+                    withEnv(["BASE_URL=http://localhost:8080"]) {
+                        script {
+                        	def gatling = new Gatling(this)
+                        	gatling.execute()
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+}
