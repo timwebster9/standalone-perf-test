@@ -13,8 +13,10 @@ pipeline {
         stage('Gatling Test') {
             steps {
 				withEnv(["BASE_URL=http://localhost:8080"]) {
-					def gatling = new com.timw.Gatling(this)
-					gatling.execute()
+					script {
+						def gatling = new com.timw.Gatling(this)
+						gatling.execute()
+					}
 				}
             }
         }
